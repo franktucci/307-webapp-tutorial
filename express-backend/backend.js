@@ -67,8 +67,18 @@ app.get('/users/:id', (req, res) => {
 
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
+    if (userToAdd['name'] == undefined || userToAdd['job'] == undefined) {
+        res.status(400).send('Make sure to include "name" and "job" fields in POST request.');
+        return;
+    }
+    userToAdd['id'] = generateId();
     addUser(userToAdd);
-    res.status(200).end();
+    let result = {
+        id: userToAdd['id'],
+        name: userToAdd['name'],
+        job: userToAdd['job']
+    };
+    res.status(201).send(result);
 });
 
 function addUser(user){
@@ -103,10 +113,21 @@ app.delete('/users/:id', (req, res) => {
 
 function deleteUserById(id) {
     for(let i= 0; i < users['users_list'].length; i++) {
-        if(users['users_list'][i]['id'] === id) {
+        if(users['users_list'][i]['id'] == id) {
             users['users_list'].splice(i, 1);
         }
     }
+}
+
+function generateId() {
+    let result = "";
+    result += String.fromCharCode(97 + Math.floor(Math.random() * 26));
+    result += String.fromCharCode(97 + Math.floor(Math.random() * 26));
+    result += String.fromCharCode(97 + Math.floor(Math.random() * 26));
+    result += Math.floor(Math.random() * 10).toString();
+    result += Math.floor(Math.random() * 10).toString();
+    result += Math.floor(Math.random() * 10).toString();
+    return result;
 }
 
 app.listen(port, () => {
