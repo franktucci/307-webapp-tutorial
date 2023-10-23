@@ -58,7 +58,7 @@ function MyApp() {
     }
 
     async function makeDeleteCall(index){
-        let id = characters[index]['id'];
+        let id = characters[index]['_id'];
         try {
             const response = await axios.delete('http://localhost:8000/users/' + id);
             return response;
